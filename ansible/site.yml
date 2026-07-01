@@ -1,0 +1,11 @@
+- name: Configure Jenkins Server
+  hosts: jenkins
+  become: yes
+  roles:
+    - jenkins
+
+- name: Configure Kubernetes Nodes
+  hosts: kubernetes_master:kubernetes_workers
+  become: yes
+  roles:
+    - docker_k8s

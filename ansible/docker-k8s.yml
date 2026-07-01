@@ -1,0 +1,41 @@
+- name: Install Docker and Kubernetes tools
+  hosts: kubernetes_master:kubernetes_workers
+  become: yes
+
+  tasks:
+    - name: Update apt
+      apt:
+        update_cache: yes
+
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Enable Docker
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Install kubectl dependencies
+      apt:
+        name:
+          - apt-transport-https
+          - curl
+        state: present
+
+    - name: Add Kubernetes key
+      apt_key:
+        url: https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key
+        state: present
+
+    - name: Add Kubernetes repo
+      apt_repository:
+        repo: deb https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /
+        state: present
+
+    - name: Install kubectl
+      apt:
+        name: kubectl
+        state: present
